@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+img {
+  width: 100px;
+}
+
+.profil-page,
+.logo,
+.log-container,
+.nav-container,
+ul {
+  display: flex;
+}
+
+.logo {
+  align-items: center;
+}
+
+.log-container {
+  border: 1px solid black;
+}
+
+li {
+  list-style-type: none;
+}
+
+ul {
+  justify-content: space-between;
+}
+
+.nav-container {
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid;
+  padding: 0 15px;
+  margin-bottom: 5px;
+}
+
+i {
+  font-size: 30px;
+}
+
+button {
+  background-color: aquamarine;
+}
+
+div {
+  border: 1px solid green;
+}
+
+/********LeftNav.js***************/
+
+.left-nav-container {
+  background-color: rgb(231, 128, 128);
+}
+
+/***************UpdateProfil.js*****************/
+
+.profil-container {
+  background-color: brown;
+  display: flex;
+  margin: auto;
+  border-radius: 25px;
+}
+
+.icons {
+  padding: 20px;
+}
+
+i {
+  padding: 15px;
+}
+
+h1 {
+  width: 100%;
+  background-color: orange;
+}
+
+h5 {
+  font-size: 50%;
+}

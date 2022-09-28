@@ -1,20 +1,23 @@
 import React, { useContext } from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import "../styles/index.scss";
 import { UserIdContext } from "./AppContext";
-import "../styles/index.scss";
-import Logout from "./Log";
+import Logout from "./Log/Logout";
+import "../styles/pages/home.css";
 
-const Navbar = () => {
+const Header = () => {
   const userId = useContext(UserIdContext);
+  const userData = useSelector((state) => state.userReducer);
+
+  console.log(userData);
 
   return (
     <nav>
       <div className="nav-container">
         <div className="logo">
-          <NavLink exact to="/">
+          <NavLink to="/profil">
             <div className="logo">
-              <img src="./img/icon.svg" alt="icon" />
+              <img src="./img/logo.png" alt="logo" />
               <h3>Groupomania</h3>
             </div>
           </NavLink>
@@ -22,18 +25,19 @@ const Navbar = () => {
         {userId ? (
           <ul>
             <li></li>
-            <li className="welcome">
-              <NavLink exact to="/profil">
-                <h5>Bienvenue 'valeur dynamique'</h5>
+            <li className="welcome btn">
+              <NavLink to="/profil">
+                <h5>Bienvenu {userData.pseudo}</h5>
               </NavLink>
             </li>
             <Logout />
           </ul>
         ) : (
           <ul>
+            <li></li>
             <li>
-              <NavLink exact to="/profil">
-                <img src="./img/icon.svg" className="logout" alt="login" />
+              <NavLink to="/profil">
+                <i className="fa-solid fa-right-to-bracket"></i>
               </NavLink>
             </li>
           </ul>
@@ -43,4 +47,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Header;

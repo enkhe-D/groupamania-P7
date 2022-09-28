@@ -1,12 +1,11 @@
 import React from "react";
 import axios from "axios";
 import cookie from "js-cookie";
-import "../../styles/index.scss";
 
 const Logout = () => {
   const removeCookie = (key) => {
     if (window !== "undefined") {
-      cookie.remove(key, { expires: 1 });
+      cookie.remove(key, { expiresIn: 1 });
     }
   };
 
@@ -14,7 +13,7 @@ const Logout = () => {
     await axios({
       method: "get",
       url: `${process.env.REACT_APP_API_URL}api/user/logout`,
-      withCredentials: true,
+      withCredentials: "true",
     })
       .then(() => removeCookie("jwt"))
       .catch((err) => console.log(err));
@@ -24,8 +23,7 @@ const Logout = () => {
 
   return (
     <li onClick={logout}>
-      <img src="./img/icon.svg" alt="logout" />
-      click
+      <i className="fa-solid fa-right-from-bracket"></i>
     </li>
   );
 };

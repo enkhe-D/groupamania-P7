@@ -8,11 +8,12 @@ import {
 import Home from "../../pages/Home";
 import Profil from "../../pages/Profil";
 import Trending from "../../pages/Trending";
-import Navbar from "../Navbar";
+import Header from "../Header";
+
 const index = () => {
   return (
     <Router>
-      <Navbar />
+      <Header />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/profil" exact element={<Profil />} />

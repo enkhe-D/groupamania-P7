@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../../styles/index.scss";
 import axios from "axios";
+import "../../styles/pages/home.css";
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");

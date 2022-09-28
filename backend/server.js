@@ -21,7 +21,13 @@ const corsOptions = {
   methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
   preflightContinue: false,
 };
-app.use(cors(corsOptions));
+
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+  })
+);
 
 //body-Parser
 app.use(bodyParser.json());

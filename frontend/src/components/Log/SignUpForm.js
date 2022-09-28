@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import SignInForm from "./SignInForm";
+import "../../styles/pages/home.css";
 
 //voir gestion des erreurs
 
@@ -62,12 +63,18 @@ const SignUpForm = () => {
       {formSubmit ? (
         <>
           <SignInForm />
+          <span></span>
           <h4 className="success">
             Enregistrement réussi, veuillez-vous connecter
           </h4>
         </>
       ) : (
-        <form action="" onSubmit={handleRegister} id="sign-up-form">
+        <form
+          action=""
+          onSubmit={handleRegister}
+          id="sign-up-form"
+          className="signUp"
+        >
           <label htmlFor="pseudo">Pseudo</label>
           <br />
           <input
