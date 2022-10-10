@@ -11,9 +11,9 @@ img {
 .profil-page,
 .logo,
 .log-container,
-.nav-container,
-ul {
+.nav-container {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .logo {
@@ -26,18 +26,20 @@ ul {
 
 li {
   list-style-type: none;
+  margin: 15px;
 }
 
 ul {
-  justify-content: space-between;
+  align-items: center;
+  border: rgb(197, 19, 49) solid 3px;
+  flex-wrap: wrap;
+  padding: 0;
+  display: flex;
 }
 
 .nav-container {
   align-items: center;
-  justify-content: space-between;
   border-bottom: 1px solid;
-  padding: 0 15px;
-  margin-bottom: 5px;
 }
 
 i {
@@ -48,14 +50,12 @@ button {
   background-color: aquamarine;
 }
 
-div {
-  border: 1px solid green;
-}
-
 /********LeftNav.js***************/
 
 .left-nav-container {
   background-color: rgb(231, 128, 128);
+  border-radius: 25px;
+  width: 100px;
 }
 
 /***************UpdateProfil.js*****************/
@@ -63,8 +63,17 @@ div {
 .profil-container {
   background-color: brown;
   display: flex;
-  margin: auto;
+  flex-wrap: wrap;
   border-radius: 25px;
+}
+
+.profil-container h1 {
+  width: 50%;
+  text-align: center;
+  margin: auto;
+}
+.right-part {
+  width: 100%;
 }
 
 .icons {
@@ -76,10 +85,98 @@ i {
 }
 
 h1 {
-  width: 100%;
   background-color: orange;
 }
 
-h5 {
-  font-size: 50%;
+.card-container {
+  background-color: rgb(218, 169, 169);
+  border-radius: 25px;
+  justify-content: space-between;
+  width: 600px;
+  margin: 0 auto 50px;
+}
+
+.card-right {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid blueviolet;
+  border-radius: 25px;
+}
+
+.update-container {
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto 50px;
+}
+
+.left-part,
+.right-part {
+  background-color: rgb(175, 98, 98);
+}
+
+.left-part {
+  border: 1px solid black;
+  padding-right: 10px;
+}
+
+.right-part {
+  border: 1px solid black;
+}
+
+.card-footer {
+  display: flex;
+}
+
+.pseudo h3 {
+  text-align: center;
+}
+
+.pseudo {
+  display: flex;
+}
+
+p {
+  width: 100%;
+}
+
+.card-header {
+  margin: auto;
+}
+
+.thread-container {
+  width: 900px;
+}
+.home {
+  display: flex;
+  justify-content: center;
+}
+
+.card-right p {
+  text-align: center;
+}
+
+.button-container {
+  width: 66px;
+}
+
+.fa-check {
+  border-radius: 50%;
+  border: 1px solid black;
+  padding: 0;
+}
+
+.icon-checked {
+  background-color: green;
+  padding: 0;
+}
+
+.pseudo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-comment {
+  border: 1px solid black;
 }

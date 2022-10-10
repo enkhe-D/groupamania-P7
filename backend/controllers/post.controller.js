@@ -5,8 +5,9 @@ const { uploadErrors } = require("../utils/errors.utils");
 const fs = require("fs");
 const { promisify } = require("util");
 const pipeline = promisify(require("stream").pipeline);
+const sharp = require("sharp");
 
-//lecture post
+//lecture de tout les post
 module.exports.readPost = async (req, res) => {
   PostModel.find((err, docs) => {
     if (!err) res.send(docs);
@@ -14,16 +15,15 @@ module.exports.readPost = async (req, res) => {
   }).sort({ createdAt: -1 });
 };
 
-//creation post
+//creation et sauvegarde de post
 module.exports.createPost = async (req, res) => {
   let fileName;
   if (req.file !== null) {
-    console.log(req.file);
     try {
       if (
-        req.file.detectedMimeType != "image/jpg" &&
-        req.file.detectedMimeType != "image/jpeg" &&
-        req.file.detectedMimeType != "image/png"
+        req.file.detectedMimeType !== "image/jpg" &&
+        req.file.detectedMimeType !== "image/jpeg" &&
+        req.file.detectedMimeType !== "image/png"
       )
         throw Error("Fichier invalide");
 
@@ -36,16 +36,22 @@ module.exports.createPost = async (req, res) => {
     fileName = req.body.posterId + Date.now() + ".jpg";
 
     await pipeline(
+      req.file.stream,
+      fs.createWriteStream(
+        `${__dirname}/../client/plublic/uploads/profil/${fileName}`
+      )
+    );
+
+    await sharp(
       req.file.buffer,
       fs.createWriteStream(
-        `${__dirname}/../client/public/uploads/post/${fileName}`
+        `${__dirname}/../client/public/uploads/posts/${fileName}`
       )
     );
   }
 
   const newPost = new PostModel({
     posterId: req.body.posterId,
-    picture: req.file !== null ? "./uploads/posts/" + fileName : "",
     message: req.body.message,
     video: req.body.video,
     likers: [],
@@ -56,14 +62,16 @@ module.exports.createPost = async (req, res) => {
     const post = await newPost.save();
     return res.status(201).json(post);
   } catch (err) {
-    return res.status(400).json({ err });
+    return res.status(400).send(err);
   }
 };
+//}
 
-//mise a jour
+//mise a jour de post
 module.exports.updatePost = async (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("Id inconnue: " + req.parmas.id);
+
   const updatedRecord = {
     message: req.body.message,
   };
@@ -79,7 +87,7 @@ module.exports.updatePost = async (req, res) => {
   );
 };
 
-//suppression
+//suppression de post
 module.exports.deletePost = async (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send("Id inconnue: " + req.parmas.id);
@@ -90,12 +98,13 @@ module.exports.deletePost = async (req, res) => {
   });
 };
 
-//likes
-module.exports.likePost = async (req, res) => {
+//likes un post
+module.exports.likePost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("Id inconnue: " + req.parmas.id);
+    return res.status(400).send("Id inconnue: " + req.params.id);
+
   try {
-    await PostModel.findByIdAndUpdate(
+    PostModel.findByIdAndUpdate(
       req.params.id,
       {
         $addToSet: { likers: req.body.id },
@@ -105,7 +114,8 @@ module.exports.likePost = async (req, res) => {
         if (err) return res.status(400).send(err);
       }
     );
-    await UserModel.findByIdAndUpdate(
+
+    UserModel.findByIdAndUpdate(
       req.body.id,
       {
         $addToSet: { likes: req.params.id },
@@ -123,12 +133,12 @@ module.exports.likePost = async (req, res) => {
   }
 };
 
-//unlike
-module.exports.unlikePost = async (req, res) => {
+//unlike un post
+module.exports.unlikePost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("Id inconnue: " + req.parmas.id);
+    return res.status(400).send("Id inconnue: " + req.params.id);
   try {
-    await PostModel.findByIdAndUpdate(
+    PostModel.findByIdAndUpdate(
       req.params.id,
       {
         $pull: { likers: req.body.id },
@@ -139,8 +149,8 @@ module.exports.unlikePost = async (req, res) => {
       }
     );
 
-    // retire l utilisateur
-    await UserModel.findByIdAndUpdate(
+    // retire l utilisateur du tableau
+    UserModel.findByIdAndUpdate(
       req.body.id,
       {
         $pull: { likes: req.params.id },
@@ -158,9 +168,10 @@ module.exports.unlikePost = async (req, res) => {
   }
 };
 
-module.exports.commentPost = async (req, res) => {
+module.exports.commentPost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("Id inconnue: " + req.parmas.id);
+    return res.status(400).send("Id inconnue: " + req.params.id);
+
   try {
     return PostModel.findByIdAndUpdate(
       req.params.id,
@@ -184,9 +195,11 @@ module.exports.commentPost = async (req, res) => {
     return res.status(400).send(err);
   }
 };
-module.exports.editCommentPost = async (req, res) => {
+
+//edit post
+module.exports.editCommentPost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("Id inconnue: " + req.parmas.id);
+    return res.status(400).send("Id inconnue: " + req.params.id);
 
   try {
     return PostModel.findById(req.params.id, (err, docs) => {
@@ -206,9 +219,9 @@ module.exports.editCommentPost = async (req, res) => {
   }
 };
 
-module.exports.deleteCommentPost = async (req, res) => {
+module.exports.deleteCommentPost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("Id inconnue: " + req.parmas.id);
+    return res.status(400).send("Id inconnue: " + req.params.id);
 
   try {
     return PostModel.findByIdAndUpdate(

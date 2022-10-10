@@ -16,8 +16,8 @@ const app = express();
 const corsOptions = {
   origin: process.env.CLIENT_URL,
   credentials: true,
-  allowedHeader: ["sessionId", "Content-type"],
-  exposedHeader: ["sessionId"],
+  allowedHeaders: ["sessionId", "Content-type"],
+  exposedHeaders: ["sessionId"],
   methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
   preflightContinue: false,
 };

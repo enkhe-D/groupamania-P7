@@ -4,20 +4,24 @@ const ObjectID = require("mongoose").Types.ObjectId;
 
 /*-----GET - ALL---*/
 module.exports.getAllUsers = async (req, res) => {
-  const users = await UserModel.find().select("-password");
-  res.status(200).json(users);
+  try {
+    const users = await UserModel.find().select("-password");
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
 };
 
 /*-----GET - ONE---*/
-module.exports.getOneUser = (req, res) => {
-  console.log(req.params);
-  if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("identifiant inconnue: " + req.params.id);
-
-  UserModel.findById(req.params.id, (err, docs) => {
-    if (!err) res.send(docs);
-    else console.log("identifiant inconnue: " + err);
-  }).select("-password");
+module.exports.getOneUser = async (req, res) => {
+  try {
+    const users = await UserModel.findById({ _id: req.params.id }).select(
+      "-password"
+    );
+    return res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ err });
+  }
 };
 
 /*-----PUT---*/
@@ -34,10 +38,6 @@ module.exports.updateUser = async (req, res) => {
         },
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
-      // (err, docs) => {
-      //   if (!err) return res.send(docs);
-      //   if (err) return res.status(500).send({ message: err });
-      // }
     )
       .then((docs) => {
         return res.send(docs);
@@ -77,10 +77,6 @@ module.exports.follow = async (req, res) => {
       req.params.id,
       { $addToSet: { following: req.body.idToFollow } },
       { new: true, upsert: true }
-      // (err, docs) => {
-      //   if (!err) res.status(201).json(docs);
-      //   else return res.status(400).json({ err });
-      // }
     )
       .then((docs) => {
         if (docs === null) {
@@ -125,10 +121,6 @@ module.exports.unfollow = async (req, res) => {
       req.params.id,
       { $pull: { following: req.body.idToUnfollow } },
       { new: true, upsert: true }
-      // (err, docs) => {
-      //   if (!err) res.status(200).json(docs);
-      //   else return res.status(400).json(err);
-      // }
     )
       .then((docs) => {
         return res.send(docs);
@@ -142,9 +134,6 @@ module.exports.unfollow = async (req, res) => {
       req.body.idToUnfollow,
       { $pull: { followers: req.params.id } },
       { new: true, upsert: true }
-      // (err, docs) => {
-      //   if (err) return res.status(400).json(err);
-      // }
     )
       .then((docs) => {
         return res.send(docs);

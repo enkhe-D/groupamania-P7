@@ -46,6 +46,7 @@ export const updateBio = (userId, bio) => {
   };
 };
 
+//follow
 export const followUser = (followerId, idToFollow) => {
   return (dispatch) => {
     return axios({
@@ -60,6 +61,7 @@ export const followUser = (followerId, idToFollow) => {
   };
 };
 
+//unfollow
 export const unfollowUser = (followerId, idToUnfollow) => {
   return (dispatch) => {
     return axios({

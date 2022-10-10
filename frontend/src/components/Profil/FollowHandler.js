@@ -20,8 +20,8 @@ const FollowHandler = ({ idToFollow, type }) => {
   };
 
   useEffect(() => {
-    if (!isEmpty(userData.Following)) {
-      if (userData.Following.includes(idToFollow)) {
+    if (!isEmpty(userData.following)) {
+      if (userData.following.includes(idToFollow)) {
         setIsFollowed(true);
       } else setIsFollowed(false);
     }
@@ -42,7 +42,9 @@ const FollowHandler = ({ idToFollow, type }) => {
           {type === "suggestion" && (
             <button className="unfollow-btn">Suivre</button>
           )}
-          {type === "card" && <i className="fa-solid fa-check"></i>}
+          {type === "card" && (
+            <i className="fa-solid fa-check icon-checked"></i>
+          )}
         </span>
       )}
     </>
