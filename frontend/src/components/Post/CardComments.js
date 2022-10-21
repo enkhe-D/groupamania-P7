@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addComment, getPosts } from "../../actions/post.action";
 import FollowHandler from "../Profil/FollowHandler";
-import { isEmpty, timestampParser } from "../utils";
+import { isEmpty, timestampParser } from "../Utils";
 import EditDeleteComment from "./EditDeleteComment";
 
 const CardComments = ({ post }) => {

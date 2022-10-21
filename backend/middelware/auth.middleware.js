@@ -1,39 +1,28 @@
 const jwt = require("jsonwebtoken");
-const UserModel = require("../models/user.model");
+require("dotenv").config();
 
-module.exports.checkUser = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, process.env.TOKEN_SECRET, async (err, decodedToken) => {
-      if (err) {
-        res.locals.user = null;
-        res.cookie("jwt", "", { maxAge: 1 });
-        next();
-      } else {
-        let user = await UserModel.findById(decodedToken.id);
-        res.locals.user = user;
-        next();
-      }
-    });
-  } else {
-    res.locals.user = null;
-    next();
-  }
-};
+module.exports = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.verify(token, `${process.env.TOKEN_SECRET}`);
+    console.log("----decodedToken-----");
+    console.log(decodedToken);
 
-module.exports.requireAuth = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (token) {
-    jwt.verify(token, process.env.TOKEN_SECRET, async (err, decodedToken) => {
-      if (err) {
-        console.log(err);
-        res.send(200).json(" sorry no token");
-      } else {
-        console.log(decodedToken.id);
-        next();
-      }
-    });
-  } else {
-    console.log("No Token");
+    const userId = decodedToken.userId;
+    console.log("----userId--decodedToken---");
+    console.log(userId);
+
+    console.log("----req.body.userId---");
+    console.log(req.body.ficheUser.userId);
+
+    req.auth = { userId };
+
+    if (req.body === decodedToken) {
+      throw "UserId non valide";
+    } else {
+      next();
+    }
+  } catch (err) {
+    res.status(401).json({ err });
   }
 };

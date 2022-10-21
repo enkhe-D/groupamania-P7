@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { isEmpty, timestampParser } from "../utils";
+import { isEmpty, timestampParser } from "../Utils";
 import { NavLink } from "react-router-dom";
 import { addPost, getPosts } from "../../actions/post.action";
+import "../../styles/components/post.css";
+import "../../styles/pages/home.css";
+import "../../styles/components/thread.css";
 
 const NewPostForm = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,6 +14,7 @@ const NewPostForm = () => {
   const [video, setVideo] = useState("");
   const [file, setFile] = useState();
   const userData = useSelector((state) => state.userReducer);
+  const error = useSelector((state) => state.errorReducer.postError);
   const dispatch = useDispatch();
 
   const handlePost = async () => {
@@ -42,24 +46,23 @@ const NewPostForm = () => {
     setFile("");
   };
 
-  const handleVideo = () => {
-    let findLink = message.split(" ");
-    for (let i = 0; i > findLink.length; i++) {
-      if (
-        findLink[i].includes("https://www.yout") ||
-        findLink[i].includes("https://yout")
-      ) {
-        let embed = findLink[i].replace("wtach?v=", "embed/");
-        setVideo(embed.split("&")[0]);
-        findLink.splice(i, 1);
-        setMessage(findLink.join(" "));
-        setPostPicture("");
-      }
-    }
-  };
-
   useEffect(() => {
     if (!isEmpty(userData)) setIsLoading(false);
+    const handleVideo = () => {
+      let findLink = message.split(" ");
+      for (let i = 0; i > findLink.length; i++) {
+        if (
+          findLink[i].includes("https://www.yout") ||
+          findLink[i].includes("https://yout")
+        ) {
+          let embed = findLink[i].replace("wtach?v=", "embed/");
+          setVideo(embed.split("&")[0]);
+          findLink.splice(i, 1);
+          setMessage(findLink.join(" "));
+          setPostPicture("");
+        }
+      }
+    };
     handleVideo();
   }, [userData, message, video]);
 
@@ -155,6 +158,10 @@ const NewPostForm = () => {
                   <button onClick={() => setVideo("")}>Supprimer vidéo</button>
                 )}
               </div>
+
+              {!isEmpty(error.format) && <p>{error.format}</p>}
+              {!isEmpty(error.maxSize) && <p>{error.maxSize}</p>}
+
               <div className="btn-send">
                 {message || postPicture || video.length > 20 ? (
                   <button className="cancel" onClick={cancelPost}>

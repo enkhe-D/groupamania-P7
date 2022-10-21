@@ -1,147 +1,64 @@
-//importation des packages
-const UserModel = require("../models/user.model");
-const ObjectID = require("mongoose").Types.ObjectId;
+require("dotenv").config();
+const User = require("../models/User.model");
+const bcrypt = require("bcrypt");
+const cryptojs = require("crypto-js");
+const jwt = require("jsonwebtoken");
 
-/*-----GET - ALL---*/
-module.exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await UserModel.find().select("-password");
-    res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ err });
-  }
-};
+//Sigup
+exports.signup = (req, res) => {
+  const emailCryptoJs = cryptojs
+    .HmacSHA256(req.body.email, `${process.env.CRYPTO_EMAIL}`)
+    .toString();
 
-/*-----GET - ONE---*/
-module.exports.getOneUser = async (req, res) => {
-  try {
-    const users = await UserModel.findById({ _id: req.params.id }).select(
-      "-password"
-    );
-    return res.status(200).json(users);
-  } catch (err) {
-    res.status(500).json({ err });
-  }
-};
-
-/*-----PUT---*/
-module.exports.updateUser = async (req, res) => {
-  if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("identifiant inconnue: " + req.params.id);
-
-  try {
-    await UserModel.findOneAndUpdate(
-      { _id: req.params.id },
-      {
-        $set: {
-          bio: req.body.bio,
-        },
-      },
-      { new: true, upsert: true, setDefaultsOnInsert: true }
-    )
-      .then((docs) => {
-        return res.send(docs);
-      })
-      .catch((err) => {
-        return res.status(500).json({ message: err });
-      });
-  } catch (err) {
-    return res.status(500).json({ message: err });
-  }
-};
-
-/*-----DELETE---*/
-
-module.exports.deleteUser = async (req, res) => {
-  if (!ObjectID.isValid(req.params.id))
-    return res.status(400).send("ID unknown: " + req.params.id);
-
-  try {
-    await UserModel.deleteOne({ _id: req.params.id }).exec();
-    res.status(200).json({ message: "Successfully deleted. " });
-  } catch (err) {
-    return res.status(500).json({ message: err });
-  }
-};
-
-/*-----PATCH---- follow-----*/
-module.exports.follow = async (req, res) => {
-  if (
-    !ObjectID.isValid(req.params.id) ||
-    !ObjectID.isValid(req.body.idToFollow)
-  )
-    return res.status(400).send("ID unknown: " + req.params.id);
-  try {
-    // add to the follower list
-    await UserModel.findByIdAndUpdate(
-      req.params.id,
-      { $addToSet: { following: req.body.idToFollow } },
-      { new: true, upsert: true }
-    )
-      .then((docs) => {
-        if (docs === null) {
-          throw new Error("error");
-        }
-        res.send(docs);
-      })
-      .catch((err) => {
-        return res.status(500).json({ message: err });
+  bcrypt
+    .hash(req.body.password, 10)
+    .then((hash) => {
+      const user = new User({
+        email: emailCryptoJs,
+        password: hash,
       });
 
-    // add to following list
-    await UserModel.findByIdAndUpdate(
-      req.body.idToFollow,
-      { $addToSet: { followers: req.params.id } },
-      { new: true, upsert: true }
-    )
-      .then((docs) => {
-        if (docs === null) {
-          throw new Error("error");
-        }
-        res.send(docs);
-      })
-      .catch((err) => {
-        return res.status(500).json({ message: err });
-      });
-  } catch (err) {
-    return res.status(500).json({ message: err });
-  }
+      user
+        .save()
+        .then(() =>
+          res.status(201).json({ message: "Utilisateur créé et sauvegardé" })
+        )
+        .catch((err) => res.status(400).json({ err }));
+    })
+    .catch((err) => res.status(500).json({ err }));
 };
 
-/*-----PATCH---- unfollow-----*/
-module.exports.unfollow = async (req, res) => {
-  if (
-    !ObjectID.isValid(req.params.id) ||
-    !ObjectID.isValid(req.body.idToUnfollow)
-  )
-    return res.status(400).send("ID unknown: " + req.params.id);
-  try {
-    // remove from to the follower list
-    await UserModel.findByIdAndUpdate(
-      req.params.id,
-      { $pull: { following: req.body.idToUnfollow } },
-      { new: true, upsert: true }
-    )
-      .then((docs) => {
-        return res.send(docs);
-      })
-      .catch((err) => {
-        return res.status(400).json({ err });
-      });
+// LOGIN
+exports.login = (req, res) => {
+  const emailCryptoJs = cryptojs
+    .HmacSHA256(req.body.email, `${process.env.CRYPTO_EMAIL}`)
+    .toString();
 
-    // remove to following list
-    await UserModel.findByIdAndUpdate(
-      req.body.idToUnfollow,
-      { $pull: { followers: req.params.id } },
-      { new: true, upsert: true }
-    )
-      .then((docs) => {
-        return res.send(docs);
-      })
-      .catch((err) => {
-        return res.status(400).json({ err });
-      });
-  } catch (err) {
-    return res.status(500).json({ message: err });
-  }
+  User.findOne({ email: emailCryptoJs })
+
+    .then((user) => {
+      if (!user) {
+        return res.status(401).json({ error: "Utilisateur inconnue" });
+      }
+
+      bcrypt
+        .compare(req.body.password, user.password)
+        .then((validPassword) => {
+          if (!validPassword) {
+            return res
+              .status(401)
+              .json({ error: "mot de passe ou email incorrecte" });
+          }
+          res.status(200).json({
+            userId: user._id,
+            token: jwt.sign(
+              { userId: user._id },
+              `${process.env.TOKEN_SECRET}`,
+              { expiresIn: "12h" }
+            ),
+          });
+        })
+        .catch((err) => res.status(400).json({ err }));
+    })
+    .catch((err) => res.status(500).json({ err }));
 };

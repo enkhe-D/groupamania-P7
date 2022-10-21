@@ -4,6 +4,8 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { useDispatch } from "react-redux";
 import { likePost, unlikePost } from "../../actions/post.action";
+import "../../styles/components/post.css";
+import "../../styles/pages/home.css";
 
 const LikeButton = ({ post }) => {
   const [liked, setLiked] = useState(false);

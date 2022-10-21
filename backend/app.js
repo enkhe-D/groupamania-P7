@@ -1,12 +1,20 @@
+//importation des packages
 const express = require("express");
-const morgan = require("morgan");
 const mongoose = require("./config/db");
-require("dotenv").config();
-
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const path = require("path");
 const app = express();
 
+//debug
 app.use(morgan("dev"));
+mongoose.set("debug", true);
 
+//importation des routes
+const userRoutes = require("./routes/user.routes");
+const ficheUserRoutes = require("./routes/ficheUser.routes");
+
+//cors
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -19,5 +27,13 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+// analysateur
+app.use(bodyParser.json());
+
+// routes
+app.use("/api/auth", userRoutes);
+app.use("/api/fiche-user", ficheUserRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 module.exports = app;

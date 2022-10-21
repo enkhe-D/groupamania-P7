@@ -1,0 +1,38 @@
+.connection-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-container ul {
+  display: flex;
+  padding-bottom: 10px;
+}
+
+.form-container ul li {
+  padding: 0 15px;
+}
+
+.form-container {
+  margin: auto;
+  padding: 15px;
+}
+
+.signUp {
+  border: 1px solid;
+  width: 100%;
+  text-align: center;
+}
+
+#sign-up-form {
+  width: 100%;
+  text-align: center;
+}
+
+.sign-up-form input {
+  margin: 15px 0;
+}
+/***********index.js*************/
+
+.success {
+  margin: 20px auto;
+}

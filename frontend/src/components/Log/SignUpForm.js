@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import SignInForm from "./SignInForm";
 import "../../styles/pages/home.css";
+import "../../styles/components/log.css";
 
 //voir gestion des erreurs
 

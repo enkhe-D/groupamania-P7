@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBio } from "../../actions/user.actions";
 import LeftNav from "../LeftNav";
-import { dateParser } from "../utils";
+import { dateParser } from "../Utils";
 import FollowHandler from "./FollowHandler";
 import UploadImg from "./UploadImg";
 
@@ -10,7 +10,9 @@ const UpdateProfil = () => {
   const [bio, setBio] = useState("");
   const [updateForm, setUpdateForm] = useState(false);
   const userData = useSelector((state) => state.userReducer);
+  console.log(userData);
   const usersData = useSelector((state) => state.usersReducer);
+  const error = useSelector((state) => state.errorReducer.userError);
   const dispatch = useDispatch();
   const [followingPopup, setFollowingPopup] = useState(false);
   const [followersPopup, setFollowersPopup] = useState(false);
@@ -29,6 +31,8 @@ const UpdateProfil = () => {
           <h3>Photo de profil</h3>
           <img src={userData.picture} alt="user-pict" />
           <UploadImg />
+          <p>{error.maxSize}</p>
+          <p>{error.format}</p>
         </div>
         <div className="right-part">
           <div className="bio-update">

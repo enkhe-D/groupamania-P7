@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadPicture } from "../../actions/user.actions";
 import "../../styles/pages/home.css";
+import "../../styles/pages/profil.css";
 
 const UploadImg = () => {
   const [file, setFile] = useState();
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.userReducer);
+  console.log("----UploadImg--userData-------");
+  console.log(userData);
 
   const handlePicture = (e) => {
     e.preventDefault();

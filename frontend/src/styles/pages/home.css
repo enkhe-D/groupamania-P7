@@ -1,7 +1,98 @@
-body {
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  list-style-type: none;
+  box-sizing: border-box;
+  color: black;
+}
+
+/***********leftNav.js********************/
+.home {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.home-header {
+  width: 100%;
+}
+.icons {
+  font-size: 35px;
+}
+
+.main {
+  background-color: rgb(233, 170, 170);
+  border-radius: 25px;
+  margin: 31px;
+}
+
+.icons .active-left-nav {
+  margin: 50px 0;
+  padding: 15px;
+}
+
+.icon-item {
+  margin: 11px 0;
+}
+
+.active-left-nav:hover {
+  background-color: brown;
+  border-radius: 0 25px 25px 0;
+  padding: 10px;
+}
+
+/* .home-header {
+  border: green solid 3px;
+} */
+
+/* .right-side {
+  border: green solid 3px;
+} */
+
+/*body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+.main {
+  display: flex;
+}
+
+/***********Header.js****************/
+/*nav {
+  border: 3px solid red;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+textarea {
+  border-radius: 15px;
+  width: 100%;
+}
+
+/*********NewPostForm***********/
+/* .post-container {
+  margin: auto;
+  display: flex;
+}
+
+.icon {
+  border: 1px solid green;
+}
+.home-header {
+  border: rgb(126, 126, 26) solid 1px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.data {
+  border: 1px solid;
+}
+
+.btn-send {
 }
 
 img {
@@ -16,7 +107,9 @@ img {
   justify-content: space-evenly;
 }
 
-.logo {
+.logo,
+ul,
+.nav-container {
   align-items: center;
 }
 
@@ -30,29 +123,36 @@ li {
 }
 
 ul {
-  align-items: center;
   border: rgb(197, 19, 49) solid 3px;
   flex-wrap: wrap;
   padding: 0;
   display: flex;
+  justify-content: end;
 }
 
 .nav-container {
-  align-items: center;
   border-bottom: 1px solid;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 i {
   font-size: 30px;
 }
-
+.btn-send {
+  display: flex;
+  justify-content: end;
+}
 button {
   background-color: aquamarine;
+  border-radius: 10px;
+  height: 36px;
 }
 
 /********LeftNav.js***************/
 
-.left-nav-container {
+/*.left-nav-container {
   background-color: rgb(231, 128, 128);
   border-radius: 25px;
   width: 100px;
@@ -60,7 +160,7 @@ button {
 
 /***************UpdateProfil.js*****************/
 
-.profil-container {
+/*.profil-container {
   background-color: brown;
   display: flex;
   flex-wrap: wrap;
@@ -92,7 +192,6 @@ h1 {
   background-color: rgb(218, 169, 169);
   border-radius: 25px;
   justify-content: space-between;
-  width: 600px;
   margin: 0 auto 50px;
 }
 
@@ -179,4 +278,4 @@ p {
 
 .edit-comment {
   border: 1px solid black;
-}
+} */

@@ -1,0 +1,64 @@
+/***********NewPostForm.js****************/
+
+.data {
+  background-color: aqua;
+}
+.post-form {
+  border: 1px solid;
+  width: 100%;
+  text-align: center;
+}
+
+/*********Card.js**************************/
+.card-right {
+  border: 1px solid red;
+}
+
+/**********CardComments.js*****************/
+.right-part {
+  background-color: bisque;
+}
+
+.post-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#message {
+  border-radius: 10px;
+  width: 50%;
+  height: 93px;
+}
+
+#file-upload {
+  opacity: 0;
+}
+
+.fa-image {
+  font-size: 2em;
+}
+
+.footer-form,
+.footer-form .icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-footer {
+}
+
+.button-container {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
+
+.send {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1em;
+  background-color: brown;
+}

@@ -1,0 +1,53 @@
+/*********Header.js*******page route profil******/
+nav {
+  border: 3px solid;
+  margin-bottom: 50px;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+.nav-container .logo img {
+  width: 100px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.nav-container ul {
+  display: flex;
+  align-items: center;
+}
+
+.nav-container ul li {
+  padding: 5px;
+}
+
+/******FriendsHint.js*********************/
+.get-friends-container {
+  border: 1px solid;
+}
+
+/*******UpdateProfil.js******************/
+.left-part {
+  border: 1px solid orange;
+}
+
+.right-part {
+  border: 1px solid orange;
+}
+
+.icon-checked {
+  border: 1px solid;
+  border-radius: 25px;
+}
+
+/* .unfollow-btn {
+  border-radius: 25px;
+  border: 1px solid black;
+} */

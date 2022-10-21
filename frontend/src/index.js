@@ -5,10 +5,12 @@ import { Provider } from "react-redux";
 import rootReducer from "./reducers";
 import { configureStore } from "@reduxjs/toolkit";
 import { getUsers } from "./actions/users.actions";
+import { getPosts } from "./actions/post.action";
 
 const store = configureStore({ reducer: rootReducer });
 
 store.dispatch(getUsers());
+store.dispatch(getPosts());
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);

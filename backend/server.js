@@ -1,54 +1,49 @@
-//variable d env
-require("dotenv").config({ path: "./config/.env" });
-require("./config/db");
+const http = require("http");
+const app = require("./app");
+require("dotenv").config();
 
-//importation des packages
-const express = require("express");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
+const normalizePort = (val) => {
+  const port = parseInt(val, 10);
 
-const { checkUser, requireAuth } = require("./middelware/auth.middleware");
+  if (isNaN(port)) {
+    return val;
+  }
+  if (port >= 0) {
+    return port;
+  }
+  return false;
+};
+const port = normalizePort(process.env.PORT);
+app.set("port", process.env.PORT);
 
-//appel de l application
-const app = express();
-
-const corsOptions = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-  allowedHeaders: ["sessionId", "Content-type"],
-  exposedHeaders: ["sessionId"],
-  methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-  preflightContinue: false,
+const errorHandler = (error) => {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+  const address = server.address();
+  const bind =
+    typeof address === "string" ? "pipe " + address : "port: " + port;
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges.");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use.");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 };
 
-app.use(
-  cors({
-    origin: (origin, callback) => callback(null, true),
-    credentials: true,
-  })
-);
+const server = http.createServer(app);
 
-//body-Parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-//jwt
-app.get("*", checkUser);
-app.get("/jwtid", requireAuth, (req, res) => {
-  res.status(200).send(res.locals.user._id);
+server.on("error", errorHandler);
+server.on("listening", () => {
+  const address = server.address();
+  const bind = typeof address === "string" ? "pipe " + address : "port " + port;
+  console.log("Listening on " + bind);
 });
 
-//routes
-const userRoutes = require("./routes/user.routes");
-const postRoutes = require("./routes/post.routes");
-
-//middelware
-app.use("/api/user", userRoutes);
-app.use("/api/post", postRoutes);
-
-//ecouteur
-app.listen(process.env.PORT, () => {
-  console.log(`Listening on port: ${process.env.PORT}`);
-});
+server.listen(process.env.PORT);

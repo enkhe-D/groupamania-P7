@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { followUser, unfollowUser } from "../../actions/user.actions";
-import { isEmpty } from "../utils";
+import { isEmpty } from "../Utils";
 import "../../styles/pages/home.css";
+import "../../styles/pages/profil.css";
 
 const FollowHandler = ({ idToFollow, type }) => {
   const userData = useSelector((state) => state.userReducer);
