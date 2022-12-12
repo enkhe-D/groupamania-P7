@@ -1,0 +1,44 @@
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.753);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+}
+
+.modal {
+  position: fixed;
+  top: 40vh;
+  left: 10%;
+  width: 80%;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.header {
+  background-color: brown;
+  padding: 1rem;
+}
+
+.header h2 {
+  color: aliceblue;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.btnFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+@media (min-width: 500px) {
+  .modal {
+    width: 20rem;
+    left: calc(50% - 10rem);
+  }
+}

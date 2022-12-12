@@ -1,0 +1,29 @@
+.profil {
+  margin: 0.5;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 25px;
+}
+
+.profil h1 {
+  font: inherit;
+  font-size: 1.3rem;
+}
+
+.profil img {
+  margin: 1rem 2rem 0rem;
+}
+
+.profil p:nth-child(2n) {
+  color: black;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.profil button {
+  margin-top: 1.5rem;
+  margin-right: 0.5rem;
+}

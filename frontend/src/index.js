@@ -1,21 +1,17 @@
 import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
-import rootReducer from "./reducers";
-import { configureStore } from "@reduxjs/toolkit";
-import { getUsers } from "./actions/users.actions";
-import { getPosts } from "./actions/post.action";
+import "./index.css";
+import { AuthContextProvider } from "./store/authContext";
 
-const store = configureStore({ reducer: rootReducer });
-
-store.dispatch(getUsers());
-store.dispatch(getPosts());
-
-const rootElement = document.getElementById("root");
-const root = createRoot(rootElement);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <React.StrictMode>
+    <AuthContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthContextProvider>
+  </React.StrictMode>
 );

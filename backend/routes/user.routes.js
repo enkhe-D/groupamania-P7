@@ -1,13 +1,10 @@
-//importation des dépendances
 const router = require("express").Router();
-const password = require("../middelware/password");
-const multer = require("../middelware/multer");
+const User = require("../models/User.model");
 
-//importation des controllers
-const userController = require("../controllers/user.controller");
+const userCtrl = require("../controllers/user.controler");
 
-//authentification
-router.post("/signup", password, userController.signup);
-router.post("/login", userController.login);
+router.get("/:id", userCtrl.readOneProfil);
+router.put("/:id", userCtrl.updateProfil);
+router.delete("/:id", userCtrl.deleteProfil);
 
 module.exports = router;

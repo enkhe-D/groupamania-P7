@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { UserIdContext } from "./components/AppContext";
-import Routes from "./components/Routes";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { getUser } from "./actions/user.actions";
+import React, { useContext } from "react";
+import AuthForm from "./components/Auth/AuthForm";
+import MainHeader from "./components/layout/MainHeader";
+import Test from "./components/Test.js";
+import Home from "./pages/Home";
+import Post from "./pages/Post";
+import AuthContext from "./store/authContext";
+import { Route, Routes } from "react-router-dom";
+import Error from "./components/Error/Error";
 
 const App = () => {
-  const [userId, setUserId] = useState(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      await axios({
-        method: "get",
-        url: `${process.env.REACT_APP_API_URL}jwtid`,
-        withCredentials: true,
-      })
-        .then((res) => {
-          setUserId(res.data);
-        })
-        .catch((err) => console.log("No token"));
-    };
-    fetchToken();
-    if (userId) dispatch(getUser(userId));
-  }, [dispatch, userId]);
+  const authCtx = useContext(AuthContext);
+  const isLoggedIn = authCtx.isLoggedIn;
 
   return (
-    <UserIdContext.Provider value={userId}>
-      <Routes />
-    </UserIdContext.Provider>
+    <>
+      <MainHeader />
+      <Routes>
+        <Route index element={<Home />} />
+
+        <Route path="/home" element={<Home />} />
+        <Route path="/post" element={<Post />} />
+        <Route path="*" element={<Error />} />
+      </Routes>
+
+      {/* {!isLoggedIn && <AuthForm />}
+      <Test /> */}
+    </>
   );
 };
 
