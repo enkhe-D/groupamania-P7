@@ -3,10 +3,9 @@ const fs = require("fs");
 
 // CREATE POST
 exports.createPost = (req, res) => {
-  const postObject = JSON.parse(req.body.post);
-
   const post = new Post({
-    ...postObject,
+    ...JSON.parse(req.body.post),
+    userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
     }`,
@@ -16,14 +15,14 @@ exports.createPost = (req, res) => {
     .save()
     .then((post) => res.status(201).json({ message: "Post enregistré", post }))
     .catch((error) =>
-      res.status(400).json({ message: "probleme pour save", error: error })
+      res.status(400).json({ message: "probleme pour save", error })
     );
 };
 
 // READ ALL POSTS
 exports.readAllPost = (req, res) => {
   Post.find()
-    .then((post) => res.status(200).json(post))
+    .then((posts) => res.status(200).json({ posts }))
     .catch((error) =>
       res
         .status(200)
@@ -33,37 +32,20 @@ exports.readAllPost = (req, res) => {
 
 // READ ONE POST
 exports.readOnePost = (req, res) => {
-  const idParams = { _id: req.params.id };
-
-  Post.findOne(idParams)
-    .then((post) => res.status(200).json(post))
+  Post.findOne({ _id: req.params.id })
+    .then((post) => {
+      if (post.userId != req.auth.userId) {
+        res.status(401).json({ message: "action non autorisée" });
+      } else {
+        res.status(200).json({ post });
+      }
+    })
     .catch((error) =>
-      res.status(400).json({ message: "Post pas trouvé", error: error })
+      res.status(400).json({ message: "Post pas trouvé", error })
     );
 };
 
 exports.updatePost = (req, res) => {
-  const idParams = { _id: req.params.id };
-
-  if (req.file) {
-    console.log("----req.file : TRUE");
-    Post.findOne(idParams)
-      .then((filePost) => {
-        //récupération nom image a suppr
-        const filename = filePost.imageUrl.split("/images")[1];
-
-        //suppression de l image
-        fs.unlink(`images/${filename}`, (error) => {
-          if (error) throw error;
-        });
-      })
-      .catch((error) =>
-        res.status(404).json({ message: "PORBLEME REQ.FILE if", error: error })
-      );
-  } else {
-    console.log("----req.file : FALSE");
-  }
-
   const postObject = req.file
     ? {
         ...JSON.parse(req.body.post),
@@ -73,27 +55,54 @@ exports.updatePost = (req, res) => {
       }
     : { ...req.body };
 
-  //mise a jour qui seront envoyé dans la bdd
-  Post.updateOne(idParams, { ...postObject, idParams })
-    .then(() => {
-      res.status(200).json({ message: "Post mise a jour!" });
+  delete postObject._userId;
+
+  Post.findOne({ _id: req.params.id })
+    .then((post) => {
+      if (post.userId != req.auth.userId) {
+        res.status(401).json({ message: "action non autorisée" });
+      } else {
+        if (req.file) {
+          const filename = post.imageUrl.split("/images/")[1];
+          fs.unlink(`images/${filename}`, () => {
+            Post.updateOne(
+              { _id: req.params.id },
+              { ...postObject, _id: req.params.id }
+            )
+              .then(() =>
+                res.status(200).json({ message: "post update with image" })
+              )
+              .catch((error) => res.status(401).json({ error }));
+          });
+        } else {
+          Post.updateOne(
+            { _id: req.params.id },
+            { ...postObject, _id: req.params.id }
+          )
+            .then(() =>
+              res.status(200).json({ message: "post update without image" })
+            )
+            .catch((error) => res.status(401).json({ error }));
+        }
+      }
     })
-    .catch((error) => res.status(404).json({ error }));
+    .catch((error) => res.status(400).json({ error }));
 };
 
 //DELETE POST
 exports.deletePost = (req, res) => {
-  const idParams = { _id: req.params.id };
-  //chercher l objet a suppr
-  Post.findOne(idParams)
-    .then((filePost) => {
-      const filename = filePost.imageUrl.split("/images/")[1];
-      //suppression de l objet
-      fs.unlink(`images/${filename}`, () => {
-        Post.deleteOne(idParams)
-          .then(() => res.status(200).json({ message: "Post supprimé" }))
-          .catch((error) => res.status(400).json({ error }));
-      });
+  Post.findOne({ _id: req.params.id })
+    .then((post) => {
+      if (post.userId != req.auth.userId) {
+        res.status(401).json({ message: "action non autorisée" });
+      } else {
+        const filename = post.imageUrl.split("/images/")[1];
+        fs.unlink(`images/${filename}`, () => {
+          Post.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: "Post supprimé" }))
+            .catch((error) => res.status(400).json({ error }));
+        });
+      }
     })
     .catch((error) => res.status(500).json({ error }));
 };

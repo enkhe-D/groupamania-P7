@@ -12,22 +12,14 @@ module.exports = (req, res, next) => {
     //récupération du userId
     const userId = decodedToken.userId;
 
-    userIdParamsUrl = req.originalUrl.split("=")[1];
+    req.auth = {
+      userId: userId,
+    };
 
-    if (req._body === true) {
-      //controle BODY RAW
-      console.log("-----> req.body: TRUE-------");
-      if (req.body.userId === userId) {
-        next();
-      } else {
-        console.log("---->ERREUR auth body raw");
-        throw "Erreur identification userId";
-      }
-      //control FORM DATA
-    } else if (userIdParamsUrl === userId) {
-      next();
+    if (req.body.userId && req.body.userId !== userId) {
+      throw "ERREUR je ne sais pas encore quoi ";
     } else {
-      throw "ERREUR identification form-data";
+      next();
     }
   } catch (error) {
     res.status(401).json({

@@ -9,22 +9,20 @@ import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const emailInputRef = useRef();
-  const passwordInuptRef = useRef();
+  const passwordInputRef = useRef();
 
   const navigate = useNavigate();
 
   //context
   const authCtx = useContext(AuthContext);
-  console.log("--------authCtx---authForm.js-------------");
-  console.log(authCtx.token);
 
-  const [data, setData] = useState();
+  //useState
+  const [dataAuth, setDataAuth] = useState();
   const [isLogin, setIsLogin] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
 
-  console.log("------context----authForm.js-----------");
-  console.log(typeof error);
+  //spinner pour le chargement des ressoucres
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   //controler si error est true || false
   if (error) {
@@ -41,14 +39,12 @@ const AuthForm = () => {
     e.preventDefault();
 
     const dataEmail = emailInputRef.current.value;
-    const dataPassword = passwordInuptRef.current.value;
-
-    //logique a éxécuter
+    const dataPassword = passwordInputRef.current.value;
 
     if (dataEmail.trim().length === 0 || dataPassword.trim().length === 0) {
       setError({
         title: "Un ou plusieurs champs sont vides",
-        message: "Entrez vote email ou mot de passe",
+        message: "Entrez un email et un mot de passe",
       });
       return;
     }
@@ -60,18 +56,19 @@ const AuthForm = () => {
     if (!regExpEmail(dataEmail)) {
       setError({
         title: "Email invalide",
-        message: "Entrez un format de mail valide",
+        message: "Entrez un format de mail valide", //le message ne s affiche pas
       });
       return;
     }
 
-    const url = `http://localhost:5000/api/auth/${
+    /********************************************************************** */
+    const url = `http://localhost:5000/api/user/${
       isLogin ? "login" : "signup"
     }`;
 
     const fetchHandler = async () => {
       try {
-        const res = await fetch(url, {
+        const response = await fetch(url, {
           method: "POST",
           body: JSON.stringify({
             email: dataEmail,
@@ -82,29 +79,38 @@ const AuthForm = () => {
           },
         });
 
-        const dataRes = await res.json();
+        const dataResponse = await response.json();
 
         //reponse du serveur du chargement
         setIsLoading(false);
 
-        if (res.ok) {
-          setData(dataRes);
-          console.log("---------res.ok---dataRes--- authForm.js--");
-          console.log(dataRes);
-          authCtx.login(dataRes.token, dataRes.userId);
-
-          //react router dom V6 nav par programation
+        if (response.ok) {
+          setDataAuth(dataResponse);
+          authCtx.login(dataResponse.token, dataResponse.userId);
+          //react router dom V6 nav par programmation
           navigate("/Post", { replace: true });
         } else {
           setError({
             title: "Authentification Echec",
-            message: dataRes.error,
+            message: dataResponse.error,
           });
+          throw new Error(dataResponse.error);
+        }
 
-          throw new Error(dataRes.error);
+        console.log("---->RESPONSE---");
+        console.log(response);
+
+        //voir la gestion des erreurs
+        if (dataResponse && dataResponse.error) {
+          console.log("je suis dans le if");
+          console.log(dataResponse.error);
+          setError({
+            title: "Il y a un probleme",
+            message: dataResponse.error,
+          });
         }
       } catch (error) {
-        console.log("---------problème serveur-----authForm.js");
+        console.log("problème serveur");
         console.log(error);
       }
     };
@@ -114,36 +120,32 @@ const AuthForm = () => {
 
     fetchHandler();
 
-    // fetch(url, {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     email: dataEmail,
-    //     password: dataPassword,
-    //   }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setData(data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: dataEmail,
+        password: dataPassword,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setDataAuth(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
-    //pour effacer les champs
-    // emailInputRef.current.value = "";
-    // passwordInuptRef.current.value = "";
-    // azertyAZERTY01
+    //  pour effacer les champs
+    emailInputRef.current.value = "";
+    passwordInputRef.current.value = "";
   };
 
   const errorHandler = () => {
     setError(null);
   };
-
-  console.log("------data---autheForm.js-----------");
-  console.log(data);
 
   return (
     <Wrapper>
@@ -166,7 +168,7 @@ const AuthForm = () => {
 
           <div className={classes.styleForm}>
             <label htmlFor="password">Mot de passe</label>
-            <input type="password" id="password" ref={passwordInuptRef} />
+            <input type="password" id="password" ref={passwordInputRef} />
           </div>
 
           <div className={classes.btnForm}>
@@ -184,6 +186,10 @@ const AuthForm = () => {
             {isLoading && <Loader />}
           </div>
         </form>
+
+        <div className={classes.styleFormImg}>
+          <img src="../img/icon-above-font.png" alt="img-log" />
+        </div>
       </section>
     </Wrapper>
   );

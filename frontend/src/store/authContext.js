@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-// azertyAZERTY01
 const defaultValue = {
   token: "",
   userId: null,
@@ -14,13 +13,13 @@ const AuthContext = createContext(defaultValue);
 const tokenStorage = localStorage.getItem("token");
 const userIdStorage = localStorage.getItem("userId");
 
-//provider
+//context provider
 export const AuthContextProvider = (props) => {
   //stokage du token
   const [token, setToken] = useState(tokenStorage);
   const [userId, setUserId] = useState(userIdStorage);
 
-  //fonction ppur le token state
+  //fonction pour mettre a jour le token dans le state
   const loginHandler = (token, userId) => {
     setToken(token);
     setUserId(userId);
@@ -42,8 +41,6 @@ export const AuthContextProvider = (props) => {
 
   //si connecter
   const userIsLoggedIn = !!token;
-  console.log("------userIsLoggedIn---------");
-  console.log(userIsLoggedIn);
 
   //context value
   const contextValue = {

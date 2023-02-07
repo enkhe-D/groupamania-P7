@@ -14,11 +14,11 @@ Toutes les routes sont protégées par TOKEN
 
 # Route Post pour créer un compte
 
-http://localhost:5000/api/auth/signup
+http://localhost:5000/api/user/signup
 
 # Route Post pour se logger
 
-http://localhost:5000/api/auth/login
+http://localhost:5000/api/user/login
 
 ### Posts
 

@@ -3,94 +3,78 @@ import classes from "./FichePost.module.css";
 import Button from "../Ui/Button";
 import AuthContext from "../../store/authContext";
 
-const FichePost = ({ data }) => {
-  // console.log("--------state dataUpdate-------");
-  // console.log(data);
-
+const FichePost = ({ data, onRefresh }) => {
   const [dataUpdate, setDataUpdate] = useState(data);
   const [modification, setModification] = useState(false);
   const authCtx = useContext(AuthContext);
 
-  const pseudoInputRef = useRef();
-  const messageInputRef = useRef();
-  const nomInputRef = useRef();
-  const prenomInputRef = useRef();
+  const userId = authCtx.userId;
 
-  console.log("-------dataUpdate----FichePost.js------------");
-  console.log(dataUpdate);
+  const refPseudo = useRef();
+  const refMessage = useRef();
 
+  //pour mettre à jour le state dataUpdate
   useEffect(() => {
-    //  console.log("je suis dans le useEffect");
     setDataUpdate(data);
   }, [data]);
 
-  // modifier les données
+  // modifier les données sur la page
   const modificationHandler = () => {
     setModification((modification) => !modification);
-    // console.log("----modification---FichePost.js---------");
-    // console.log(modification);
   };
 
-  // modification faites sur dans les champs
+  // voir les modifications faites dans les champs
   const changeHandler = (event) => {
-    const dataPseudo = pseudoInputRef.current.value;
-    const dataMessage = messageInputRef.current.value;
-    const dataNom = nomInputRef.current.value;
-    const dataPrenom = prenomInputRef.current.value;
+    const dataPseudo = refPseudo.current.value;
+    const dataMessage = refMessage.current.value;
 
     //gestion nouvelle image
-    // console.log("-------e---FichePost.js---------");
-    // console.log(e.target.files[0]);
-
-    let newImage;
+    let changeImg;
     if (event.target.files && event.target.files.length === 1) {
-      newImage = event.target.files[0];
+      changeImg = event.target.files[0];
     }
-
-    console.log("---nouvelle image--- FichePost.js-----");
-    console.log(newImage);
 
     // mise a jours des states
     setDataUpdate({
       ...dataUpdate,
       pseudo: dataPseudo,
       message: dataMessage,
-      nom: dataNom,
-      prenom: dataPrenom,
-      newImage: newImage,
+      imageUrl: changeImg,
     });
 
+    const dataUpdateFormData = {
+      pseudo: dataPseudo,
+      message: dataMessage,
+      imageUrl: changeImg,
+    };
+
+    //envoie des donnees modifiés
     const formData = new FormData();
-    formData.append("image", newImage);
-    formData.append("post", JSON.stringify(dataUpdate));
+    formData.append("image", changeImg);
+    formData.append("post", JSON.stringify(dataUpdateFormData));
 
-    console.log("-----------formData---FicheForm.js----------");
-    console.log(formData.get("image"));
-    console.log(formData.get("post"));
-    console.log("'''''''''''''''''''''''''''''''");
-
-    const url = "http://localhost:5000/api/post/post";
+    const url = "http://localhost:5000/api/post/" + userId;
 
     const fetchUploadHandler = async () => {
       try {
-        const responseFUH = await fetch(url, {
+        const response = await fetch(url, {
           method: "PUT",
           headers: {
-            //"Content-Type": "application/json",
             Authorization: `Bearer ${authCtx.token}`,
           },
           body: formData,
         });
+        const dataResponse = await response.json();
 
-        const dataResponse = await responseFUH.json();
-
-        if (responseFUH.ok) {
-          console.log("----responseFUH---FichePost.js");
-          console.log(responseFUH);
+        if (response.ok) {
+          console.log("----response.ok---FichePost.js------");
+          console.log(response);
           console.log(dataResponse);
         } else {
-          console.log("-------pas ok response fetchUpH FichePost.js");
-          console.log(responseFUH);
+          console.log(
+            "---> PAS OK response fetchfetchUploadHandler: FichePost.js"
+          );
+          console.log(response);
           console.log(dataResponse);
           throw new Error(dataResponse.error);
         }
@@ -102,14 +86,22 @@ const FichePost = ({ data }) => {
     fetchUploadHandler();
   };
 
+  //   pour render automatiquement GET
+  useEffect(() => {
+    onRefresh();
+  }, [modification]);
+
   return (
     <>
-      <section className={classes.profil}>
+      <section className={classes.post}>
         <h1>Bonjour {dataUpdate.pseudo} </h1>
-        <p>enjoy</p>
+
+        <p>vous etes dans le Post</p>
+
         <p>
-          <img src={data && data.image} alt="profil img" />
+          <img src={data && data.imageUrl} alt="profil img" />
         </p>
+
         {modification && (
           <input
             type="file"
@@ -125,29 +117,7 @@ const FichePost = ({ data }) => {
             type="text"
             value={dataUpdate.pseudo}
             onChange={changeHandler}
-            ref={pseudoInputRef}
-          />
-        )}
-
-        <p>Nom: {data && data.nom}</p>
-        {!modification && <p>{dataUpdate.nom}</p>}
-        {modification && (
-          <input
-            type="text"
-            value={dataUpdate.nom}
-            onChange={changeHandler}
-            ref={nomInputRef}
-          />
-        )}
-
-        <p>Prénom: {data && data.prenom}</p>
-        {!modification && <p>{dataUpdate.prenom}</p>}
-        {modification && (
-          <input
-            type="text"
-            value={dataUpdate.prenom}
-            onChange={changeHandler}
-            ref={prenomInputRef}
+            ref={refPseudo}
           />
         )}
 
@@ -158,7 +128,7 @@ const FichePost = ({ data }) => {
             type="text"
             value={dataUpdate.message}
             onChange={changeHandler}
-            ref={messageInputRef}
+            ref={refMessage}
           />
         )}
 

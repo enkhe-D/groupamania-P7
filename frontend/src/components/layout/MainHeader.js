@@ -6,8 +6,6 @@ import AuthContext from "../../store/authContext";
 const MainHeader = () => {
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
-  console.log("-----ICI---isLoggedIn----MainHeader.js------");
-  console.log(isLoggedIn);
 
   return (
     <header className={classes.header}>

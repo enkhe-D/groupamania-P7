@@ -1,22 +1,32 @@
+form {
+  margin: auto;
+}
+
 .auth {
   border: 1px solid black;
   border-radius: 5px;
   text-align: center;
   margin: 3rem auto;
   padding: 1rem;
-  width: 90%;
-  max-width: 20rem;
+  max-width: 50rem;
   box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.73);
-  background-color: rgb(68, 183, 187);
+  background-color: rgb(238, 200, 200);
+  display: flex;
+  flex-wrap: wrap;
 }
+
+/* * {
+  border: 1px solid;
+} */
 
 .auth h1 {
   text-align: center;
   margin-bottom: 1rem;
+  width: 100%;
 }
 
 .styleForm {
-  margin-bottom: 1rem;
+  margin: 1rem;
 }
 
 .styleForm label {
@@ -27,7 +37,7 @@
 
 .styleForm input {
   font: inherit;
-  background-color: rgb(238, 200, 200);
+  background-color: rgb(255, 255, 255);
   border: none;
   width: 100%;
   padding: 0.5rem;
@@ -52,4 +62,13 @@
 
 .btnForm p:nth-child(2):hover {
   color: rgb(72, 25, 201);
+}
+
+.styleFormImg img {
+  width: 100%;
+}
+
+.styleFormImg {
+  width: 50%;
+  margin: auto;
 }

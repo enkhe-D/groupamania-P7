@@ -6,25 +6,9 @@ const Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     pseudo: {
       type: String,
-      maxlength: [100, "Le pseudo est trop long"],
       required: true,
-    },
-
-    nom: {
-      type: String,
-      minlength: [2, "Le nom est trop court"],
-      maxlength: [55, "Le nom est trop long"],
-      required: [true, "Le nom est requis"],
-    },
-
-    prenom: {
-      type: String,
-      minlength: [2, "Le prenom est trop court"],
-      maxlength: [55, "Le prenom est trop long"],
-      required: [true, "Le Prenom est requis"],
     },
 
     message: {
@@ -35,7 +19,6 @@ const Schema = new mongoose.Schema(
 
     imageUrl: {
       type: String,
-      required: true,
     },
 
     likes: {
@@ -54,18 +37,6 @@ const Schema = new mongoose.Schema(
 
     usersDisliked: {
       type: [String],
-    },
-
-    comments: {
-      type: [
-        {
-          commenterId: String,
-          commentNom: String,
-          text: String,
-          timestamp: Number,
-        },
-      ],
-      required: true,
     },
   },
   {

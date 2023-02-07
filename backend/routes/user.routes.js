@@ -1,10 +1,15 @@
 const router = require("express").Router();
-const User = require("../models/User.model");
 
-const userCtrl = require("../controllers/user.controler");
+//importation des middlewares
+const password = require("../middleware/password");
+const checkEmail = require("../middleware/checkEmail");
 
-router.get("/:id", userCtrl.readOneProfil);
-router.put("/:id", userCtrl.updateProfil);
-router.delete("/:id", userCtrl.deleteProfil);
+//importation des controllers
+const userCtrl = require("../controllers/user.controller");
+
+//importation des routes auth
+router.post("/signup", checkEmail, password, userCtrl.signup);
+router.post("/login", userCtrl.login);
+router.delete("/delete/:id", userCtrl.deleteCompte);
 
 module.exports = router;

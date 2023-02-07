@@ -4,12 +4,13 @@
   color: white;
   padding: 0.5rem 2rem;
   border-radius: 10px;
-  border: 1px solid rgb(32, 105, 117);
+  /* border: 1px solid rgb(32, 105, 117); */
+  border: none;
   cursor: pointer;
 }
 
 .button:hover {
-  background-color: rgb(238, 200, 200);
+  background-color: rgb(238, 139, 139);
   color: black;
-  border: 1px solid rgb(67, 183, 201);
+  /* border: 1px solid rgb(67, 183, 201); */
 }

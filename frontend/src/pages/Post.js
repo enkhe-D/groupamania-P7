@@ -3,21 +3,18 @@ import AuthContext from "../store/authContext";
 //import classes from "../components/Test.module.css";
 //import Button from "../components/Ui/Button";
 import { Navigate } from "react-router-dom";
-import FicheProfil from "../components/FichePost/FichePost";
+import FichePost from "../components/FichePost/FichePost";
 
-const Profil = () => {
+const Post = () => {
   const authCtx = useContext(AuthContext);
-
   const [data, setData] = useState([]);
 
   const isLoggedIn = authCtx.isLoggedIn;
 
-  // requete pour acceder au ressource
-  const url = `http://localhost:5000/api/post/`;
+  const userId = authCtx.userId;
 
-  console.log("-----------url---Post.js--------");
-  console.log(url);
-  // probleme pour récupérer les données GET
+  // requete pour acceder au ressource
+  const url = "http://localhost:5000/api/post/" + userId;
 
   const fetchHandler = useCallback(async () => {
     try {
@@ -30,17 +27,13 @@ const Profil = () => {
       });
 
       const dataResponse = await response.json();
-      console.log("--------dataResponse---Post.js------");
-      console.log(dataResponse);
 
       if (response.ok) {
         const dataLisible = () => {
           return {
-            pseudo: dataResponse.posts[0].pseudo,
-            nom: dataResponse.posts[0].nom,
-            prenom: dataResponse.posts[0].prenom,
-            message: dataResponse.posts[0].message,
-            image: dataResponse.posts[0].imageUrl,
+            pseudo: dataResponse.post[0].pseudo,
+            message: dataResponse.post[0].message,
+            imageUrl: dataResponse.post[0].imageUrl,
           };
         };
         setData(dataLisible);
@@ -48,25 +41,31 @@ const Profil = () => {
         throw new Error(dataResponse.error);
       }
     } catch (error) {
-      console.log(
-        "---probleme serveur: la requête n est pas parti---Post.js-----------"
-      );
+      console.log("---> probleme serveur: la requête n est pas parti: Post.js");
       console.log(error);
     }
   }, [authCtx.token, url]);
 
+  // pour executer la fonction au montage du composant
   useEffect(() => {
     if (isLoggedIn) {
       fetchHandler();
     }
   }, [fetchHandler, isLoggedIn]);
 
+  console.log("----state/data---Post.js");
+  console.log(data);
+
+  const onRefresh = () => {
+    fetchHandler();
+  };
+
   return (
     <>
       {!isLoggedIn && <Navigate to="/" replace={true} />}
-      {isLoggedIn && <FicheProfil data={data} />}
+      {isLoggedIn && <FichePost data={data} onRefresh={onRefresh} />}
     </>
   );
 };
 
-export default Profil;
+export default Post;
