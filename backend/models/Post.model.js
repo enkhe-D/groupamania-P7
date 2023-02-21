@@ -6,10 +6,6 @@ const Schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pseudo: {
-      type: String,
-      required: true,
-    },
 
     message: {
       type: String,
@@ -21,22 +17,24 @@ const Schema = new mongoose.Schema(
       type: String,
     },
 
-    likes: {
-      type: [Number],
-      defaut: 0,
+    video: {
+      type: String,
     },
 
-    dislikes: {
-      type: [Number],
-      defaut: 0,
-    },
-
-    usersLiked: {
+    likers: {
       type: [String],
+      required: true,
     },
-
-    usersDisliked: {
-      type: [String],
+    comments: {
+      type: [
+        {
+          commenterId: String,
+          pseudoComment: String,
+          text: String,
+          timestamp: Number,
+        },
+      ],
+      required: true,
     },
   },
   {

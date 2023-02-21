@@ -1,10 +1,18 @@
 const router = require("express").Router();
 
+//importation des middleware
 const auth = require("../middleware/auth.middleware");
 const multer = require("../middleware/multer");
 
-//import controller like
+//importation du controller like
 const { userLike } = require("../controllers/like.controller");
+
+//importation controller comments
+const {
+  commentPost,
+  editCommentPost,
+  deleteCommentPost,
+} = require("../controllers/comments.controller");
 
 //import controller posts
 const postCtrl = require("../controllers/post.controller");
@@ -18,5 +26,9 @@ router.delete("/:id", auth, multer, postCtrl.deletePost);
 
 //route like
 router.post("/like/:id", auth, userLike);
+
+router.patch("/comment-post/:id", commentPost);
+router.patch("/edit-comment-post/:id", editCommentPost);
+router.patch("/delete-comment-post/:id", deleteCommentPost);
 
 module.exports = router;

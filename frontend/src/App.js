@@ -16,10 +16,10 @@ const App = () => {
       <MainHeader />
 
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/post" element={<Post />} />
-        <Route path="*" element={<Error />} />
+        <Route key="1" index element={<Home />} />
+        <Route key="2" path="/home" element={<Home />} />
+        <Route key="3" path="/post" element={<Post />} />
+        <Route key="4"  path="*" element={<Error />} />
       </Routes>
 
       {/* {!isLoggedIn && <AuthForm />}

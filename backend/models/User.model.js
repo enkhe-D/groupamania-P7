@@ -1,31 +1,52 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
-const Schema = mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 55,
+const Schema = mongoose.Schema(
+  {
+    pseudo: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 55,
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    picture: {
+      type: String,
+      default: "./images/Image003.jpg",
+    },
+    bio: {
+      type: String,
+    },
+    followers: {
+      type: [String],
+    },
+    followings: {
+      type: [String],
+    },
+    likes: {
+      type: [String],
+    },
+    admin: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  role: {
-    type: String,
-    default: "user",
-    required: true,
-    trim: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timesstampes: true,
+  }
+);
 
 Schema.plugin(uniqueValidator);
 

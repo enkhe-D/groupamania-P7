@@ -133,10 +133,10 @@ const FichePost = ({ data, onRefresh }) => {
         )}
 
         <div className="button">
-          <Button onClick={modificationHandler}>
+          <Button key="btn1" onClick={modificationHandler}>
             {!modification ? "Modifier Post" : "Envoyer"}
           </Button>
-          <Button>Supprimer Post</Button>
+          <Button key="btn2">Supprimer Post</Button>
         </div>
       </section>
     </>

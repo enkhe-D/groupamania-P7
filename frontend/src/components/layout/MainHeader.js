@@ -14,6 +14,7 @@ const MainHeader = () => {
           <NavLink
             className={({ isActive }) => (isActive ? classes.active : "")}
             to="Home"
+            key="1"
           >
             {" "}
             <li>Accueil</li>
@@ -23,6 +24,7 @@ const MainHeader = () => {
             <NavLink
               className={({ isActive }) => (isActive ? classes.active : "")}
               to="Post"
+              key="2"
             >
               {" "}
               <li>Post</li>

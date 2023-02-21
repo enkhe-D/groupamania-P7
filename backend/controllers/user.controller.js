@@ -4,11 +4,12 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // pour cree et enregistrer un compte
-exports.signup = (req, res) => {
+exports.signup = (req, res) => { 
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
       const user = new User({
+        pseudo: req.body.pseudo,
         email: req.body.email,
         password: hash,
       });
@@ -62,6 +63,7 @@ exports.signup = (req, res) => {
 //   //   );
 // };
 
+
 //pour ce connecter a son compte
 exports.login = (req, res) => {
   User.findOne({ email: req.body.email })
@@ -69,7 +71,7 @@ exports.login = (req, res) => {
       if (!user) {
         return res
           .status(401)
-          .json({ error: "Email et/ou mot de passe incorrecte" });
+          .json({ message: "Email et/ou mot de passe incorrecte" });
       }
       bcrypt
         .compare(req.body.password, user.password)
@@ -77,12 +79,12 @@ exports.login = (req, res) => {
           if (!validPassword) {
             return res
               .status(401)
-              .json({ error: "Email et/ou mot de passe incorrecte" });
+              .json({ message: "Email et/ou mot de passe incorrecte" });
           }
           res.status(200).json({
             userId: user._id,
             token: jwt.sign(
-              { userId: user._id },
+              { userId: user._id, admin:user.admin },
               `${process.env.JWT_TOKEN_SECRET}`,
               {
                 expiresIn: "12h",
@@ -93,35 +95,4 @@ exports.login = (req, res) => {
         .catch((error) => res.status(500).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));
-};
-
-exports.deleteCompte = (req, res) => {
-  console.log("je suis dans le contoller deleteCompte");
-
-  const id = req.params.id;
-
-  User.findOne({ userId: id })
-    .then(() => {
-      res.status(200).json({ message: "compte supprimé" });
-    })
-    .catch((error) =>
-      res.status(400).json({
-        error: error,
-        message: "probleme avec la supression du compte",
-      })
-    );
-
-  // const id = req.params.id;
-  // //chercher l objet a suppr
-  // Post.findOne({ userId: id })
-  //   .then((filePost) => {
-  //     const filename = filePost.imageUrl.split("/images/")[1];
-  //     //suppression de l objet
-  //     fs.unlink(`images/${filename}`, () => {
-  //       Post.deleteOne({ userId: id })
-  //         .then(() => res.status(200).json({ message: "Post supprimé" }))
-  //         .catch((error) => res.status(400).json({ error }));
-  //     });
-  //   })
-  //   .catch((error) => res.status(500).json({ error }));
 };

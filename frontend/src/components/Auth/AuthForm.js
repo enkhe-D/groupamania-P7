@@ -17,7 +17,7 @@ const AuthForm = () => {
   const authCtx = useContext(AuthContext);
 
   //useState
-  const [dataAuth, setDataAuth] = useState();
+  const [data, setData] = useState();
   const [isLogin, setIsLogin] = useState(true);
 
   //spinner pour le chargement des ressoucres
@@ -26,9 +26,9 @@ const AuthForm = () => {
 
   //controler si error est true || false
   if (error) {
-    console.log("true");
+    console.log("erreur: true");
   } else {
-    console.log("false");
+    console.log("erreur: false");
   }
 
   const toggleAuthModeHandler = () => {
@@ -62,9 +62,13 @@ const AuthForm = () => {
     }
 
     /********************************************************************** */
+
     const url = `http://localhost:5000/api/user/${
       isLogin ? "login" : "signup"
     }`;
+
+    console.log("----> URL ROUTE authentification");
+    console.log(url);
 
     const fetchHandler = async () => {
       try {
@@ -85,14 +89,14 @@ const AuthForm = () => {
         setIsLoading(false);
 
         if (response.ok) {
-          setDataAuth(dataResponse);
+          setData(dataResponse);
           authCtx.login(dataResponse.token, dataResponse.userId);
           //react router dom V6 nav par programmation
           navigate("/Post", { replace: true });
         } else {
           setError({
             title: "Authentification Echec",
-            message: dataResponse.error,
+            message: dataResponse.message,
           });
           throw new Error(dataResponse.error);
         }
@@ -132,20 +136,22 @@ const AuthForm = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setDataAuth(data);
+        setData(data);
       })
       .catch((err) => {
         console.log(err);
       });
 
     //  pour effacer les champs
-    emailInputRef.current.value = "";
-    passwordInputRef.current.value = "";
+    // emailInputRef.current.value = "";
+    // passwordInputRef.current.value = "";
   };
 
   const errorHandler = () => {
     setError(null);
   };
+
+  console.log(data);
 
   return (
     <Wrapper>
