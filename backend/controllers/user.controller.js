@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // pour cree et enregistrer un compte
-exports.signup = (req, res) => { 
+exports.register = (req, res) => {
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -63,7 +63,6 @@ exports.signup = (req, res) => {
 //   //   );
 // };
 
-
 //pour ce connecter a son compte
 exports.login = (req, res) => {
   User.findOne({ email: req.body.email })
@@ -84,7 +83,7 @@ exports.login = (req, res) => {
           res.status(200).json({
             userId: user._id,
             token: jwt.sign(
-              { userId: user._id, admin:user.admin },
+              { userId: user._id, admin: user.admin },
               `${process.env.JWT_TOKEN_SECRET}`,
               {
                 expiresIn: "12h",

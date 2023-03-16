@@ -29,6 +29,9 @@ exports.createPost = (req, res) => {
     comments: [],
   });
 
+  console.log("-----newPost-------");
+  console.log(newPost);
+
   newPost
     .save()
     .then((post) => res.status(201).json({ message: "Post créée!", post }))
@@ -70,7 +73,11 @@ exports.readAllPost = (req, res) => {
 // };
 
 exports.readOnePost = (req, res) => {
-  console.log(req.params.id);
+  // console.log("------req.params.id");
+  // console.log(req.param);
+
+  // console.log("------req.body");
+  // console.log(req.body);
 
   Post.findById(req.params.id)
     .then((post) => {
@@ -81,7 +88,7 @@ exports.readOnePost = (req, res) => {
       }
     })
     .catch((error) =>
-      res.status(400).json({ message: "Post pas trouvé", error })
+      res.status(400).json({ message: "Post introuvable", error })
     );
 };
 
@@ -139,8 +146,6 @@ exports.updatePost = (req, res) => {
       }
     : { ...req.body };
 
-  delete postObject._userId;
-
   Post.findByIdAndUpdate(req.params.id)
     .then((post) => {
       if (post.userId != req.auth.userId) {
@@ -149,7 +154,7 @@ exports.updatePost = (req, res) => {
         if (req.file) {
           const filename = post.imageUrl.split("/images/")[1];
           fs.unlink(`images/${filename}`, () => {
-            Post.updateOne(req.params.id, { ...postObject })
+            Post.findByIdAndUpdate(req.params.id, { ...postObject })
               .then(() =>
                 res
                   .status(200)
@@ -191,18 +196,16 @@ exports.updatePost = (req, res) => {
 // };
 
 exports.deletePost = (req, res) => {
-  Post.findByIdAndRemove(req.params.id)
+  console.log("----req.params-------");
+  console.log(req.params);
+
+  Post.findByIdAndDelete(req.params.id)
     .then((post) => {
       if (post.userId != req.auth.userId) {
-        res.status(401).json({ message: "action non autorisée" });
+        res.status(401).json({ message: "Vous n'avez pas l'autorisation" });
       } else {
-        const filename = post.imageUrl.split("/images/")[1];
-        fs.unlink(`images/${filename}`, () => {
-          Post.deleteOne({ _id: req.params.id })
-            .then(() => res.status(200).json({ message: "Post supprimé" }))
-            .catch((error) => res.status(400).json({ error }));
-        });
+        res.status(200).json({ message: "Post supprimé" });
       }
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(500).json({ message: "erreur 500", error }));
 };

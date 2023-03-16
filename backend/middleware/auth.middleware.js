@@ -17,13 +17,13 @@ module.exports = (req, res, next) => {
     };
 
     if (req.body.userId && req.body.userId !== userId) {
-      throw "ERREUR je ne sais pas encore quoi ";
+      throw "ERREUR";
     } else {
       next();
     }
   } catch (error) {
     res.status(401).json({
-      message: "Echec authentification dans le AUTH",
+      message: "Echec authentification dans le AUTH-MIDDLEWARE",
       error: error,
     });
   }

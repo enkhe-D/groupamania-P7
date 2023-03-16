@@ -10,7 +10,7 @@ const userCtrl = require("../controllers/user.controller");
 const profilCtrl = require("../controllers/profil.controller");
 
 //importation des routes auth
-router.post("/signup", checkEmail, password, userCtrl.signup);
+router.post("/register", checkEmail, password, userCtrl.register);
 router.post("/login", userCtrl.login);
 
 //route Profil

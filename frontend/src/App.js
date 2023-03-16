@@ -1,30 +1,46 @@
-import React, { useContext } from "react";
-import AuthForm from "./components/Auth/AuthForm";
-import MainHeader from "./components/layout/MainHeader";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Log from "./pages/Log";
 import Home from "./pages/Home";
-import Post from "./pages/Post";
-import AuthContext from "./store/authContext";
-import { Route, Routes } from "react-router-dom";
-import Error from "./components/Error/Error";
+import Profil from "./pages/Profil";
+import Trending from "./pages/Trending";
+import { useEffect, useState } from "react";
+import { UidContext } from "./components/AppContext";
+import axios from "axios";
+import Header from "./components/Header";
 
 const App = () => {
-  const authCtx = useContext(AuthContext);
-  const isLoggedIn = authCtx.isLoggedIn;
+  const [uid, setUid] = useState(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      await axios({
+        method: "get",
+        url: `${process.env.REACT_APP_API_URL}api/user/63f45d706de145ea445a043e`,
+        withCredentials: false,
+      })
+        .then((res) => {
+          console.log("---res dans App.js---");
+          console.log(res);
+
+          setUid(res.data);
+        })
+        .catch((err) => console.log("No Token"));
+    };
+    fetchToken();
+  }, [uid]);
 
   return (
-    <>
-      <MainHeader />
-
-      <Routes>
-        <Route key="1" index element={<Home />} />
-        <Route key="2" path="/home" element={<Home />} />
-        <Route key="3" path="/post" element={<Post />} />
-        <Route key="4"  path="*" element={<Error />} />
-      </Routes>
-
-      {/* {!isLoggedIn && <AuthForm />}
-      <Post /> */}
-    </>
+    <UidContext.Provider value={uid}>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/log" element={<Log />} />
+          <Route path="/profil" element={<Profil />} />
+          <Route path="/trending" element={<Trending />} />
+        </Routes>
+      </BrowserRouter>
+    </UidContext.Provider>
   );
 };
 

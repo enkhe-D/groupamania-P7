@@ -5,7 +5,7 @@ const auth = require("../middleware/auth.middleware");
 const multer = require("../middleware/multer");
 
 //importation du controller like
-const { userLike } = require("../controllers/like.controller");
+const { postLike } = require("../controllers/like.controller");
 
 //importation controller comments
 const {
@@ -25,7 +25,7 @@ router.put("/:id", auth, multer, postCtrl.updatePost);
 router.delete("/:id", auth, multer, postCtrl.deletePost);
 
 //route like
-router.post("/like/:id", auth, userLike);
+router.patch("/like-post/:id", auth, postLike);
 
 router.patch("/comment-post/:id", commentPost);
 router.patch("/edit-comment-post/:id", editCommentPost);
